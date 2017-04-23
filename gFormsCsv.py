@@ -6,26 +6,28 @@ import operator
 from datetime import datetime
 import matplotlib.pyplot as plt
 import types
-# import json
-# import argparse
+import json
+import argparse
 
 def isFile(fileName):
     if(not os.path.isfile(fileName)):
         raise ValueError("You must provide a valid filename as parameter")
 
 
-# def loadReplacementStrings(fileName):
-#     try:
-#         isFile(fileName)
-#         with open(fileName,'r') as jsonFile:
-#             try:
-#                 jsonReader=json.load(jsonFile)
-#                 return jsonReader;
-#             except Exception as e:
-#                 raise
-#         pass
-#     except Exception as e:
-#         return {}
+
+
+def loadReplacementStrings(fileName):
+    try:
+        isFile(fileName)
+        with open(fileName,'r') as jsonFile:
+            try:
+                jsonReader=json.load(jsonFile)
+                return jsonReader;
+            except Exception as e:
+                raise
+        pass
+    except Exception as e:
+        return {}
 
 
 def calculateDictionaryAsPercent(times,totalRows):
@@ -38,7 +40,17 @@ def calculateDictionaryAsPercent(times,totalRows):
 
     return times
 
+'''
+    @parameter fileName a csv file that each row haw a specific value we want to count
 
+    @return dictionary with the following format
+    {
+        'csvValue1':how_parcent_found1,
+        'csvValue2':how_percent_found2,
+        ...
+        'csvValuen':how_percent_foundn
+    }
+'''
 def readCsvAndCountPercentPerFormItemFromGoogleForms(fileName):
     times={}
     totalRows=0
@@ -65,6 +77,15 @@ def readCsvAndCountPercentPerFormItemFromGoogleForms(fileName):
         return calculateDictionaryAsPercent(times,totalRows)
 
 
+'''
+    @parameter dictionary dictionaryToPlot a dictionary that has values in the following format:
+    {
+     "key1": numeric_value1,
+     "key2": numeric_value2,
+     ...
+     "keyn": numeric_valuen
+    }
+'''
 def plotDataInAPie(dictionaryToPlot):
 
     fileToWrite=datetime.now().strftime("%f")+".png";
@@ -82,21 +103,24 @@ def plotDataInAPie(dictionaryToPlot):
 fileName=None
 replacements=None
 
-if __name__=="__main__":
-    try:
-        fileName=argv[1]
-        isFile(fileName)
-        pass
-    except Exception as e:
-        print("You must provide a valid filename as parameter")
-        raise
+# if __name__=="__main__":
+#     try:
+#         fileName=argv[1]
+#         isFile(fileName)
+#         pass
+#     except Exception as e:
+#         print("You must provide a valid filename as parameter")
+#         raise
 
-# parser=argparse.ArgumentParser(description='Script that reads the files from google forms csv plotsd into a pie')
-# parser.add_argument('csv_file',metavar="FILENAME", type=string,help="The google's csv file")
-# parser.add_argument('')
+parser=argparse.ArgumentParser(description='Script that reads the files from google forms csv plotsd into a pie')
+parser.add_argument('csv_file',metavar="FILENAME", type=str,help="The google's csv file")
+parser.add_argument('--replacements',type=str,help="Optional json file that allows you to create replacements for csv's values")
+args=parser.parse_args()
 
+replacements=loadReplacementStrings(args.replacements)
 print replacements
-finalTimes=readCsvAndCountPercentPerFormItemFromGoogleForms(fileName)
+finalTimes=readCsvAndCountPercentPerFormItemFromGoogleForms(args.csv_file)
+
 
 plotDataInAPie(finalTimes);
 #print finalTimes

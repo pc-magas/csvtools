@@ -6,7 +6,7 @@ import operator
 from datetime import datetime
 import matplotlib.pyplot as plt
 import types
-import json
+# import json
 # import argparse
 
 def isFile(fileName):
@@ -14,18 +14,18 @@ def isFile(fileName):
         raise ValueError("You must provide a valid filename as parameter")
 
 
-def loadReplacementStrings(fileName):
-    try:
-        isFile(fileName)
-        with open(fileName,'r') as jsonFile:
-            try:
-                jsonReader=json.load(jsonFile)
-                return jsonReader;
-            except Exception as e:
-                raise
-        pass
-    except Exception as e:
-        return {}
+# def loadReplacementStrings(fileName):
+#     try:
+#         isFile(fileName)
+#         with open(fileName,'r') as jsonFile:
+#             try:
+#                 jsonReader=json.load(jsonFile)
+#                 return jsonReader;
+#             except Exception as e:
+#                 raise
+#         pass
+#     except Exception as e:
+#         return {}
 
 
 def calculateDictionaryAsPercent(times,totalRows):

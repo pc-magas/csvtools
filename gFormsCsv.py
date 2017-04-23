@@ -6,6 +6,26 @@ import operator
 from datetime import datetime
 import matplotlib.pyplot as plt
 import types
+import json
+# import argparse
+
+def isFile(fileName):
+    if(not os.path.isfile(fileName)):
+        raise ValueError("You must provide a valid filename as parameter")
+
+
+def loadReplacementStrings(fileName):
+    try:
+        isFile(fileName)
+        with open(fileName,'r') as jsonFile:
+            try:
+                jsonReader=json.load(jsonFile)
+                return jsonReader;
+            except Exception as e:
+                raise
+        pass
+    except Exception as e:
+        return {}
 
 
 def calculateDictionaryAsPercent(times,totalRows):
@@ -28,6 +48,12 @@ def readCsvAndCountPercentPerFormItemFromGoogleForms(fileName):
         csvReader.next()  # skip the first line
         for row in csvReader:
             value=row[1]
+
+            '''
+             Because I did some mistakes and fixed later on google forms
+             I replace the 6 with 7 and 27 with 28 because I mistoon the dates
+             of the sundays.
+            '''
             value=value.replace("6","7").replace("27","28");
             if(value in times.keys()):
                 times[value]+=1
@@ -37,10 +63,6 @@ def readCsvAndCountPercentPerFormItemFromGoogleForms(fileName):
             totalRows+=1
 
         return calculateDictionaryAsPercent(times,totalRows)
-
-def isFile(fileName):
-    if(not os.path.isfile(fileName)):
-        raise ValueError("You must provide a valid filename as parameter")
 
 
 def plotDataInAPie(dictionaryToPlot):
@@ -58,6 +80,7 @@ def plotDataInAPie(dictionaryToPlot):
     plt.savefig(fileToWrite);
 
 fileName=None
+replacements=None
 
 if __name__=="__main__":
     try:
@@ -68,6 +91,11 @@ if __name__=="__main__":
         print("You must provide a valid filename as parameter")
         raise
 
+# parser=argparse.ArgumentParser(description='Script that reads the files from google forms csv plotsd into a pie')
+# parser.add_argument('csv_file',metavar="FILENAME", type=string,help="The google's csv file")
+# parser.add_argument('')
+
+print replacements
 finalTimes=readCsvAndCountPercentPerFormItemFromGoogleForms(fileName)
 
 plotDataInAPie(finalTimes);
